@@ -23,7 +23,25 @@ if st.checkbox('Mostrar DataFrame completo'):
 # Opción para ver y filtrar el DataFrame
 st.header('Filtrar y Ver Datos del DataFrame')
 st.write("Usa la tabla interactiva de abajo para explorar, filtrar y ordenar los datos.")
-edited_df = st.data_editor(comics_df, num_rows="dynamic")
+
+# Text input for searching
+search_term = st.text_input('Buscar texto en el DataFrame (en cualquier columna de texto):')
+
+display_df = comics_df.copy() # Start with a copy of the original dataframe
+
+if search_term:
+    # Get all string columns
+    string_cols = display_df.select_dtypes(include='object').columns
+    if not string_cols.empty:
+        # Create a boolean mask where any string column contains the search term (case-insensitive)
+        mask = display_df[string_cols].apply(
+            lambda col: col.astype(str).str.contains(search_term, case=False, na=False)
+        ).any(axis=1)
+        display_df = display_df[mask]
+    else:
+        st.info("No hay columnas de texto para buscar.")
+
+edited_df = st.data_editor(display_df, num_rows="dynamic")
 
 # --- 1. Distribución de la Alineación de Personajes (ALIGN) ---
 st.header('1. Distribución de la Alineación de Personajes')
