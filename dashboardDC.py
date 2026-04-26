@@ -10,10 +10,10 @@ st.title('Dashboard de Personajes de Cómics DC')
 # Asegúrate de que el archivo 'dc-wikia-data.csv' esté en la misma carpeta que tu app.py
 # O especifica la ruta completa: pd.read_csv('/ruta/completa/dc-wikia-data.csv')
 try:
- comics_df = pd.read_csv('datos/dc-wikia-data (1).csv')
+    comics_df = pd.read_csv('datos/dc-wikia-data (1).csv')
 except FileNotFoundError:
- st.error("Error: El archivo 'dc-wikia-data(1).csv' no se encontró. Asegúrate de que la ruta sea correcta.")
- st.stop()
+    st.error("Error: El archivo 'dc-wikia-data(1).csv' no se encontró. Asegúrate de que la ruta sea correcta.")
+    st.stop()
 
 # --- 1. Distribución de la Alineación de Personajes (ALIGN) ---
 st.header('1. Distribución de la Alineación de Personajes')
@@ -21,20 +21,20 @@ align_counts = comics_df['ALIGN'].value_counts().reset_index()
 align_counts.columns = ['Alignment', 'Count']
 
 fig_align_bar = px.bar(
- align_counts,
- x='Alignment',
- y='Count',
- title='Distribución de la Alineación de Personajes',
- labels={'Alignment': 'Alineación', 'Count': 'Número de Personajes'}
+    align_counts,
+    x='Alignment',
+    y='Count',
+    title='Distribución de la Alineación de Personajes',
+    labels={'Alignment': 'Alineación', 'Count': 'Número de Personajes'}
 )
 st.plotly_chart(fig_align_bar, use_container_width=True)
 
 fig_align_pie = px.pie(
- align_counts,
- values='Count',
- names='Alignment',
- title='Proporción de la Alineación de Personajes',
- hole=0.3 # Para un gráfico de donut
+    align_counts,
+    values='Count',
+    names='Alignment',
+    title='Proporción de la Alineación de Personajes',
+    hole=0.3 # Para un gráfico de donut
 )
 fig_align_pie.update_traces(textposition='inside', textinfo='percent+label')
 st.plotly_chart(fig_align_pie, use_container_width=True)
@@ -45,20 +45,20 @@ sex_counts = comics_df['SEX'].value_counts().reset_index()
 sex_counts.columns = ['Gender', 'Count']
 
 fig_sex_bar = px.bar(
- sex_counts,
- x='Gender',
- y='Count',
- title='Distribución de Género de Personajes',
- labels={'Gender': 'Género', 'Count': 'Número de Personajes'}
+    sex_counts,
+    x='Gender',
+    y='Count',
+    title='Distribución de Género de Personajes',
+    labels={'Gender': 'Género', 'Count': 'Número de Personajes'}
 )
 st.plotly_chart(fig_sex_bar, use_container_width=True)
 
 fig_sex_pie = px.pie(
- sex_counts,
- values='Count',
- names='Gender',
- title='Proporción de Género de Personajes',
- hole=0.3
+    sex_counts,
+    values='Count',
+    names='Gender',
+    title='Proporción de Género de Personajes',
+    hole=0.3
 )
 fig_sex_pie.update_traces(textposition='inside', textinfo='percent+label')
 st.plotly_chart(fig_sex_pie, use_container_width=True)
@@ -66,14 +66,24 @@ st.plotly_chart(fig_sex_pie, use_container_width=True)
 # --- 3. Personajes por Año de Primera Aparición (YEAR) ---
 st.header('3. Personajes por Año de Primera Aparición')
 
-# Eliminar NaN para el conteo de años
-year_data = comics_df['YEAR'].dropna()
+# Eliminar NaN para el conteo de años y convertir a entero para el slider
+year_data = comics_df['YEAR'].dropna().astype(int)
+
+# Obtener el rango de años mínimo y máximo
+min_year = int(year_data.min())
+max_year = int(year_data.max())
+
+# Selector de rango de años
+start_year, end_year = st.slider(
+    'Selecciona un rango de años para la tendencia',
+    min_year, max_year, (min_year, max_year)
+)
 
 fig_year_hist = px.histogram(
- year_data,
- nbins=len(year_data.unique()), # Un bin por cada año único
- title='Frecuencia de Personajes por Año de Primera Aparición',
- labels={'value': 'Año de Primera Aparición', 'count': 'Número de Personajes'}
+    year_data,
+    nbins=len(year_data.unique()), # Un bin por cada año único
+    title='Frecuencia de Personajes por Año de Primera Aparición',
+    labels={'value': 'Año de Primera Aparición', 'count': 'Número de Personajes'}
 )
 fig_year_hist.update_xaxes(dtick=10) # Mostrar etiquetas cada 10 años para legibilidad
 st.plotly_chart(fig_year_hist, use_container_width=True)
@@ -82,12 +92,15 @@ st.plotly_chart(fig_year_hist, use_container_width=True)
 year_counts = year_data.value_counts().sort_index().reset_index()
 year_counts.columns = ['Year', 'Count']
 
+# Filtrar los datos por el rango de años seleccionado
+filtered_year_counts = year_counts[(year_counts['Year'] >= start_year) & (year_counts['Year'] <= end_year)]
+
 fig_year_line = px.line(
- year_counts,
- x='Year',
- y='Count',
- title='Tendencia de Personajes por Año de Primera Aparición',
- labels={'Year': 'Año de Primera Aparición', 'Count': 'Número de Personajes'}
+    filtered_year_counts,
+    x='Year',
+    y='Count',
+    title=f'Tendencia de Personajes por Año de Primera Aparición ({start_year}-{end_year})',
+    labels={'Year': 'Año de Primera Aparición', 'Count': 'Número de Personajes'}
 )
 st.plotly_chart(fig_year_line, use_container_width=True)
 
@@ -98,10 +111,11 @@ st.header('4. Distribución del Número de Apariciones')
 appearances_data = comics_df['APPEARANCES'].dropna()
 
 fig_appearances_hist = px.histogram(
- appearances_data,
- nbins=50, # Número de bins ajustable
- title='Distribución del Número de Apariciones de Personajes',
- labels={'value': 'Número de Apariciones', 'count': 'Número de Personajes'},
- log_y=True # Usar escala logarítmica para ver mejor la distribución con muchos valores bajos
+    appearances_data,
+    nbins=50, # Número de bins ajustable
+    title='Distribución del Número de Apariciones de Personajes',
+    labels={'value': 'Número de Apariciones', 'count': 'Número de Personajes'},
+    log_y=True # Usar escala logarítmica para ver mejor la distribución con muchos valores bajos
 )
 st.plotly_chart(fig_appearances_hist, use_container_width=True)
+
