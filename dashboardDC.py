@@ -15,6 +15,11 @@ except FileNotFoundError:
     st.error("Error: El archivo 'dc-wikia-data(1).csv' no se encontró. Asegúrate de que la ruta sea correcta.")
     st.stop()
 
+# Opción para ver el DataFrame completo
+if st.checkbox('Mostrar DataFrame completo'):
+    st.subheader('DataFrame Completo de Personajes de Cómics DC')
+    st.dataframe(comics_df)
+
 # --- 1. Distribución de la Alineación de Personajes (ALIGN) ---
 st.header('1. Distribución de la Alineación de Personajes')
 align_counts = comics_df['ALIGN'].value_counts().reset_index()
