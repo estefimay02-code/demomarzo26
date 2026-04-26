@@ -4,7 +4,7 @@ import numpy as np
 
 st.set_page_config(layout="wide")
 
-st.title('Mi Primera Aplicación Streamlit con Datos y Gráficas')
+st.title('Hola soy Estefi y estoy estudiando fundamentos para el analisis de datos')
 
 st.header('DataFrame de Ejemplo')
 
@@ -15,7 +15,7 @@ data = {
     'Gastos': np.random.randint(50, 200, size=10),
     'Beneficio': np.random.randint(10, 300, size=10)
 }
-df = pd.DataFrame(data)
+df = pd.DataFrame(data);
 
 # Mostrar el DataFrame
 st.dataframe(df)
@@ -28,4 +28,4 @@ df_plot = df.set_index('Fecha')
 # Crear una gráfica de línea para 'Ventas' y 'Gastos'
 st.line_chart(df_plot[['Ventas', 'Gastos']])
 
-st.write("\nEsta es una aplicación simple de Streamlit que demuestra cómo mostrar datos tabulares y visualizarlos con una gráfica de línea.")
+st.write("\nEsta es una aplicación simple de Streamlit que demuestra cómo mostrar datos tabulares y visualizarlos con una gráfica de línea."
