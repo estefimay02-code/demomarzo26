@@ -39,6 +39,14 @@ fig_align_pie = px.pie(
 fig_align_pie.update_traces(textposition='inside', textinfo='percent+label')
 st.plotly_chart(fig_align_pie, use_container_width=True)
 
+# Botón para descargar el DataFrame de alineación
+st.download_button(
+    label="Descargar datos de alineación como CSV",
+    data=align_counts.to_csv(index=False).encode('utf-8'),
+    file_name='distribucion_alineacion.csv',
+    mime='text/csv',
+)
+
 # --- 2. Distribución de Género (SEX) ---
 st.header('2. Distribución de Género')
 sex_counts = comics_df['SEX'].value_counts().reset_index()
@@ -118,4 +126,3 @@ fig_appearances_hist = px.histogram(
     log_y=True # Usar escala logarítmica para ver mejor la distribución con muchos valores bajos
 )
 st.plotly_chart(fig_appearances_hist, use_container_width=True)
-
