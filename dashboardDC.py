@@ -20,6 +20,11 @@ if st.checkbox('Mostrar DataFrame completo'):
     st.subheader('DataFrame Completo de Personajes de Cómics DC')
     st.dataframe(comics_df)
 
+# Opción para ver y filtrar el DataFrame
+st.header('Filtrar y Ver Datos del DataFrame')
+st.write("Usa la tabla interactiva de abajo para explorar, filtrar y ordenar los datos.")
+edited_df = st.data_editor(comics_df, num_rows="dynamic")
+
 # --- 1. Distribución de la Alineación de Personajes (ALIGN) ---
 st.header('1. Distribución de la Alineación de Personajes')
 align_counts = comics_df['ALIGN'].value_counts().reset_index()
