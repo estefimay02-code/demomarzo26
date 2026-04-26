@@ -28,4 +28,4 @@ df_plot = df.set_index('Fecha')
 # Crear una gráfica de línea para 'Ventas' y 'Gastos'
 st.line_chart(df_plot[['Ventas', 'Gastos']])
 
-st.write("\nEsta es una aplicación simple de Streamlit que demuestra cómo mostrar datos tabulares y visualizarlos con una gráfica de línea."
+st.write("\nEsta es una aplicación simple de Streamlit que demuestra cómo mostrar datos tabulares y visualizarlos con una gráfica de línea.")
